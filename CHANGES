@@ -1,0 +1,11 @@
+Change log for fselect, the full-screen file selection utility.
+
+1.0	not yet ;)
+	- initial public release.
+
+1.0.1rc - added time.h where it was missing and impeding me from trying fselect.
+	- added a one shot key: pressing . you can mark the file you're selecting and exit immediately,
+	  with the file printed to standard output.
+	- added two function that gave me warnings in compilation.
+
+$Ringlet: c/misc/fselect/CHANGES,v 1.1 2014/01/07 13:11:22 roam Exp $
