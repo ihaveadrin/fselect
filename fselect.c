@@ -48,7 +48,8 @@ typedef int	(*fs_selfun)(unsigned, struct fsstat *, int *, unsigned);
 
 static fs_selfun 	fs_select[FS_STYPE_LAST] = {
 	fs_confirm_sel,
-	fs_curs_sel
+	fs_curs_sel,
+	fs_curs_cho
 };
 static fs_seltype	stype = FS_STYPE_CURS;
 
@@ -101,6 +102,7 @@ usage(int ferr) {
 	    "\t-y\tuse 'confirm one by one' selection mode;\n"
 	    "\t-h\tprint this help message and exit;\n"
 	    "\t-V\tprint version information and exit.\n"
+	    "\t-o\tselect only one file\n"
 	    );
 	if (ferr)
 		exit(EX_USAGE);
@@ -169,6 +171,9 @@ parseopts(int argc, char **argv) {
 				break;
 			case 'V':
 				versq = 1;
+				break;
+			case 'o':
+				stype = FS_STYPE_CURS_ONE;
 				break;
 			default:
 				usage(1);

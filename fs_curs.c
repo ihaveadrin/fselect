@@ -160,6 +160,105 @@ fs_curs_sel(unsigned cnt, struct fsstat *afiles, int *aactive,
 	return (0);
 }
 
+int fs_curs_cho(unsigned cnt, struct fsstat *afiles, int *aactive,
+		unsigned viewf) {
+	WINDOW *curswin;
+	char **filestr;
+	int yet, redisp, ch;
+	unsigned my, mx, start, cur;
+
+	if (curs_buildlist(&filestr, cnt, afiles, viewf) < 0)
+		return (-1);
+	if (curs_initwin(&curswin) < 0)
+		return (-1);
+
+	getmaxyx(curswin, my, mx);
+	cur = start = 0;
+	yet = redisp = 1;
+	while (yet) {
+		if (redisp) {
+			curs_displist(curswin, filestr, cnt, aactive,
+			    start, cur);
+			refresh();
+		}
+
+		switch (ch = getch(), ch) {
+			case KEY_DOWN:
+			case 'j':
+				if (cur < cnt-1) {
+					cur++;
+					redisp = 1;
+					if (cur >= start + my)
+						start = cur - my + 1;
+				}
+				break;
+
+			case KEY_UP:
+			case 'k':
+				if (cur) {
+					cur--;
+					redisp = 1;
+					if (cur < start)
+						start = cur;
+				}
+				break;
+
+			case KEY_PPAGE:
+			case 'K':
+				/* keep relative page offset */
+				cur -= start;
+				if (start >= my)
+					start -= my;
+				else if (start)
+					start = 0;
+				cur += start;
+				redisp = 1;
+				break;
+
+			case KEY_NPAGE:
+			case 'J':
+				cur -= start;
+				if (start + my < cnt)
+					start += my;
+				if (start + cur >= cnt)
+					cur = cnt-1;
+				else
+					cur += start;
+				redisp = 1;
+				break;
+
+			case KEY_HOME:
+				start = cur = 0;
+				redisp = 1;
+				break;
+
+			case KEY_END:
+				start = ((cnt-1) / my) * my;
+				cur = cnt-1;
+				break;
+
+			case '\033':
+				yet = 0;
+				break;
+
+			case KEY_ENTER:
+			case '\r':
+			case '\n':
+				yet = 0;
+				aactive[cur] = !aactive[cur];
+				break;	
+
+
+		}
+
+	}
+	if (curs_closewin(curswin) < 0)
+		return (-1);
+	if (curs_freelist(filestr, cnt) < 0)
+		return (-1);
+	return (0);
+}
+
 static int
 curs_initwin(WINDOW **pw) {
 	WINDOW *w;
