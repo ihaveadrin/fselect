@@ -48,11 +48,10 @@
  */
 
 typedef enum {
-	FS_STYPE_CONFIRM, FS_STYPE_CURS,
-	FS_STYPE_LAST
+	FS_STYPE_CONFIRM, FS_STYPE_CURS, FS_STYPE_LAST
 } fs_seltype;
 
-#define FS_OPTSTR	"f:NcyhV"
+#define FS_OPTSTR	"f:NcyhVn:"
 
 /*
  * Variables

@@ -35,10 +35,11 @@ static char	cvs_id[] __UNUS =
 
 int
 fs_confirm_sel(unsigned cnt, struct fsstat *afiles, int *aactive,
-		unsigned viewf) {
+		unsigned viewf, int max) {
 	unsigned i;
 	int ch;
 	char *s;
+	int select_amount = 0;
 
 	for (i = 0; i < cnt; i++) {
 		if (fs_filetostr(&s, afiles+i, viewf) < 0)
@@ -48,7 +49,12 @@ fs_confirm_sel(unsigned cnt, struct fsstat *afiles, int *aactive,
 		switch (ch = getchar()) {
 			case 'Y':
 			case 'y':
+				select_amount++;
 				aactive[i] = 1;
+				if(select_amount == max) {
+					free(s);
+					return 0;
+				}
 				break;
 			case 'N':
 			case 'n':

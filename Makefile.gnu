@@ -24,10 +24,11 @@
 #
 # $Ringlet: c/misc/fselect/GNUmakefile,v 1.1 2014/01/07 13:41:51 roam Exp $
 
-BDECFLAGS?=	-W -Wall -ansi -pedantic -Wbad-function-cast -Wcast-align \
+BDECFLAGS?=	-W -std=c18 -Wall -pedantic -Wbad-function-cast -Wcast-align \
 		-Wcast-qual -Wchar-subscripts -Wconversion -Winline \
 		-Wmissing-prototypes -Wnested-externs -Wpointer-arith \
-		-Wredundant-decls -Wshadow -Wstrict-prototypes -Wwrite-strings
+		-Wredundant-decls -Wshadow -Wstrict-prototypes -Wwrite-strings \
+		-Wno-unused-but-set-variable
 
 CFLAGS_OS_VER=	$(shell uname -s)
 CFLAGS_OS_REL=	$(shell uname -r)

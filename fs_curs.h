@@ -46,6 +46,6 @@
  * Functions
  */
 
-int		fs_curs_sel(unsigned, struct fsstat *, int *, unsigned);
+int		fs_curs_sel(unsigned, struct fsstat *, int *, unsigned, int);
 
 #endif /* _INCLUDED */
