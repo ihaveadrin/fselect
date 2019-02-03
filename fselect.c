@@ -1,5 +1,5 @@
 /*-
- *  Copyright (c) 2001-2014  Peter Pentchev, Teodoro Santoni
+ *  Copyright (c) 2001-2019  Peter Pentchev, Teodoro Santoni, dyveloper
  *  All rights reserved.
  * 
  *  Redistribution and use in source and binary forms, with or without
@@ -97,10 +97,11 @@ usage(int ferr) {
 
 	switchtostdout();
 	fprintf(ferr? stderr: stdout,
-	    "usage: fselect [-hV] [-f viewflags] [-y] file..\n"
+	    "usage: fselect [-hV] [-n MAX_AMOUNT] [-f viewflags] [-y] file..\n"
 	    "\t-f\tspecify format of files during selection;\n"
 	    "\t-c\tuse curses/ncurses selection mode;\n"
 	    "\t-y\tuse 'confirm one by one' selection mode;\n"
+		"\t-n\tspecify a max number of files to be selected\n"
 	    "\t-h\tprint this help message and exit;\n"
 	    "\t-V\tprint version information and exit.\n"
 	    "\t-n\tspecify maximal amount of selections\n"
