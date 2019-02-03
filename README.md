@@ -7,7 +7,7 @@ Imagine a menu to `ls -l` : fselect does just this.
 Usage
 -----
 
-  $ fselect [-hV] [-f viewflags] [-y] [FILES] ...
+  $ fselect [-hV] [-n MAX_AMOUNT] [-f viewflags] [-y] [FILES] ...
 
   -h prompts usage
   
@@ -69,4 +69,4 @@ This program has potential, I seek to integrate it with dircolors and to
 make some kind of hacked up file manager with it and a shell scripts.
 Submit your patches.
 
-(c) 2001-2014 Peter Pentchev, Teodoro Santoni
+(c) 2001-2019 Peter Pentchev, Teodoro Santoni, dyveloper
