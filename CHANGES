@@ -8,4 +8,8 @@ Change log for fselect, the full-screen file selection utility.
 	  with the file printed to standard output.
 	- added two function that gave me warnings in compilation.
 
+1.0.2 - fix warnings
+	- changed behaviour for one-shot selection: you now use the -n 1 flag, then push enter to the
+	  chosen file.
+
 $Ringlet: c/misc/fselect/CHANGES,v 1.1 2014/01/07 13:11:22 roam Exp $

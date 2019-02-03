@@ -2,7 +2,7 @@
 #define _INCLUDED_FS_CURS_H
 
 /*-
- *  Copyright (c) 2001-2014  Peter Pentchev, Teodoro Santoni
+ *  Copyright (c) 2001-2019  Peter Pentchev, Teodoro Santoni, dyveloper
  *  All rights reserved.
  * 
  *  Redistribution and use in source and binary forms, with or without
