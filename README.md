@@ -16,6 +16,10 @@ Usage
   -y instead of the menu interface, asks in stdout if you wish to select 
      a file at a time
 
+  -c use curses/ncurses selection mode
+
+  -o select only one file 
+
 File parameters are those you'd pass to `ls`, mostly expanded by the shell.
 
 And it's paired to the posix shell functions where fselect gives the best:
