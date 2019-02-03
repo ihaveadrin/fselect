@@ -53,7 +53,8 @@ fs_curs_sel(unsigned cnt, struct fsstat *afiles, int *aactive,
 	WINDOW *curswin;
 	char **filestr;
 	int yet, redisp, ch;
-	unsigned my, mx, start, cur;
+	unsigned start, cur;
+	int my, mx;
 
 	if (curs_buildlist(&filestr, cnt, afiles, viewf) < 0)
 		return (-1);
@@ -80,8 +81,8 @@ fs_curs_sel(unsigned cnt, struct fsstat *afiles, int *aactive,
 				if (cur < cnt-1) {
 					cur++;
 					redisp = 1;
-					if (cur >= start + my)
-						start = cur - my + 1;
+					if (cur >= start + (unsigned) my)
+						start = cur -  (unsigned) my + 1;
 				}
 				break;
 
@@ -99,8 +100,8 @@ fs_curs_sel(unsigned cnt, struct fsstat *afiles, int *aactive,
 			case 'K':
 				/* keep relative page offset */
 				cur -= start;
-				if (start >= my)
-					start -= my;
+				if (start >=  (unsigned) my)
+					start -=  (unsigned) my;
 				else if (start)
 					start = 0;
 				cur += start;
@@ -110,8 +111,8 @@ fs_curs_sel(unsigned cnt, struct fsstat *afiles, int *aactive,
 			case KEY_NPAGE:
 			case 'J':
 				cur -= start;
-				if (start + my < cnt)
-					start += my;
+				if (start +  (unsigned) my < cnt)
+					start +=  (unsigned) my;
 				if (start + cur >= cnt)
 					cur = cnt-1;
 				else
@@ -125,7 +126,7 @@ fs_curs_sel(unsigned cnt, struct fsstat *afiles, int *aactive,
 				break;
 
 			case KEY_END:
-				start = ((cnt-1) / my) * my;
+				start = ((cnt-1) /  (unsigned) my) *  (unsigned) my;
 				cur = cnt-1;
 				break;
 
@@ -144,8 +145,8 @@ fs_curs_sel(unsigned cnt, struct fsstat *afiles, int *aactive,
 				if (cur < cnt-1) {
 					cur++;
 					redisp = 1;
-					if (cur >= start + my)
-						start = cur - my + 1;
+					if (cur >= start +  (unsigned) my)
+						start = cur -  (unsigned) my + 1;
 				}
 				yet = 0;
 				break;
@@ -165,7 +166,8 @@ int fs_curs_cho(unsigned cnt, struct fsstat *afiles, int *aactive,
 	WINDOW *curswin;
 	char **filestr;
 	int yet, redisp, ch;
-	unsigned my, mx, start, cur;
+	int my, mx;
+	unsigned start, cur;
 
 	if (curs_buildlist(&filestr, cnt, afiles, viewf) < 0)
 		return (-1);
@@ -188,8 +190,8 @@ int fs_curs_cho(unsigned cnt, struct fsstat *afiles, int *aactive,
 				if (cur < cnt-1) {
 					cur++;
 					redisp = 1;
-					if (cur >= start + my)
-						start = cur - my + 1;
+					if (cur >=  start + (unsigned) my)
+						start = cur - (unsigned) my + 1;
 				}
 				break;
 
@@ -207,8 +209,8 @@ int fs_curs_cho(unsigned cnt, struct fsstat *afiles, int *aactive,
 			case 'K':
 				/* keep relative page offset */
 				cur -= start;
-				if (start >= my)
-					start -= my;
+				if (start >= (unsigned) my)
+					start -= (unsigned) my;
 				else if (start)
 					start = 0;
 				cur += start;
@@ -218,8 +220,8 @@ int fs_curs_cho(unsigned cnt, struct fsstat *afiles, int *aactive,
 			case KEY_NPAGE:
 			case 'J':
 				cur -= start;
-				if (start + my < cnt)
-					start += my;
+				if (start + (unsigned) my < cnt)
+					start += (unsigned) my;
 				if (start + cur >= cnt)
 					cur = cnt-1;
 				else
@@ -233,7 +235,7 @@ int fs_curs_cho(unsigned cnt, struct fsstat *afiles, int *aactive,
 				break;
 
 			case KEY_END:
-				start = ((cnt-1) / my) * my;
+				start = (unsigned int) (((cnt-1) / (unsigned int) my) * (unsigned) my);
 				cur = cnt-1;
 				break;
 
@@ -336,14 +338,15 @@ curs_dispone(WINDOW *w, char **strs, unsigned idx, unsigned row,
 static int
 curs_displist(WINDOW *w, char **strs, unsigned cnt, int *aactive,
 		unsigned start, unsigned cur) {
-	unsigned mx, my, i;
+	unsigned i;
+	int mx, my;
 
 	getmaxyx(w, my, mx);
-	for (i = start; (i < start + my) && (i < cnt); i++)
+	for (i = start; (i < start + (unsigned) my) && (i < cnt); i++)
 		curs_dispone(w, strs, i, i - start,
 		    (i == cur? A_REVERSE: 0) | (aactive[i]? A_BOLD: 0));
-	for (; i < start + my; i++) {
-		wmove(w, (int) i - start, 0);
+	for (; i < start + (unsigned) my; i++) {
+		wmove(w, (int) (i - start), 0);
 		wclrtoeol(w);
 	}
 	return (0);

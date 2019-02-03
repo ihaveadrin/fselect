@@ -51,7 +51,6 @@ static char *	date2str(time_t t);
 static char *	uid2str(uid_t uid);
 static char *	gid2str(gid_t gid);
 char *		strdup(const char *s);
-int snprintf(char *str, size_t size, const char *format, ...);
 
 
 /*
@@ -138,7 +137,7 @@ fs_filetostr(char **pstr, struct fsstat *pstat, unsigned viewf) {
 	else
 		mchar = '?';
 
-	len = strlen(pstat->fname);
+	len = (unsigned) strlen(pstat->fname);
 	sz = len + SZ_WHOLE;
 	if (s = calloc(sz, 1), s == NULL) {
 		errno = ENOMEM;
@@ -147,23 +146,23 @@ fs_filetostr(char **pstr, struct fsstat *pstat, unsigned viewf) {
 	
 	if (viewf & FS_SVIEW_MODE) {
 		s[0] = mchar;
-		mode2str(s+1, pstat->sb.st_mode, S_IRUSR, S_IWUSR, S_IXUSR);
-		mode2str(s+4, pstat->sb.st_mode, S_IRGRP, S_IWGRP, S_IXGRP);
-		mode2str(s+7, pstat->sb.st_mode, S_IROTH, S_IWOTH, S_IXOTH);
+		mode2str(s+1, (int) pstat->sb.st_mode, S_IRUSR, S_IWUSR, S_IXUSR);
+		mode2str(s+4, (int) pstat->sb.st_mode, S_IRGRP, S_IWGRP, S_IXGRP);
+		mode2str(s+7, (int) pstat->sb.st_mode, S_IROTH, S_IWOTH, S_IXOTH);
 	}
 
-	n = strlen(s);
+	n = (unsigned) strlen(s);
 	if (viewf & FS_SVIEW_UID)
-		n += snprintf(s + n, sz - n, " %-8s",
+		n += (unsigned) snprintf(s + n, sz - n, " %-8s",
 		    uid2str(pstat->sb.st_uid));
 	if (viewf & FS_SVIEW_GID)
-		n += snprintf(s + n, sz - n, " %-8s",
+		n += (unsigned) snprintf(s + n, sz - n, " %-8s",
 		    gid2str(pstat->sb.st_gid));
 	if (viewf & FS_SVIEW_SIZE)
-		n += snprintf(s + n, sz - n, " %10lu",
+		n += (unsigned) snprintf(s + n, sz - n, " %10lu",
 		    (unsigned long) pstat->sb.st_size);
 	if (viewf & FS_SVIEW_TIME)
-		n += snprintf(s + n, sz - n, " %s",
+		n += (unsigned) snprintf(s + n, sz - n, " %s",
 		    date2str(pstat->sb.st_ctime));
 	snprintf(s + n, sz - n, " %s", pstat->fname);
 
