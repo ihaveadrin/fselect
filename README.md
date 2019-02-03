@@ -18,7 +18,7 @@ Usage
 
   -c use curses/ncurses selection mode
 
-  -o select only one file 
+  -n specify maximum amount of selections
 
 File parameters are those you'd pass to `ls`, mostly expanded by the shell.
 

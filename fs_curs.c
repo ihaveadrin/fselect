@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sysexits.h>
+#include <limits.h>
 
 #include "fselect.h"
 #include "fs_curs.h"
@@ -49,12 +50,18 @@ static int	curs_displist(WINDOW *, char **, unsigned, int *,
 
 int
 fs_curs_sel(unsigned cnt, struct fsstat *afiles, int *aactive,
-		unsigned viewf) {
+		unsigned viewf, int max) {
 	WINDOW *curswin;
 	char **filestr;
 	int yet, redisp, ch;
 	unsigned start, cur;
 	int my, mx;
+	int select_amount = 0;
+
+	if(max < 0)
+		return -1;
+	if(max == 0)
+		max = INT_MAX;
 
 	if (curs_buildlist(&filestr, cnt, afiles, viewf) < 0)
 		return (-1);
@@ -74,7 +81,15 @@ fs_curs_sel(unsigned cnt, struct fsstat *afiles, int *aactive,
 		switch (ch = getch(), ch) {
 			case KEY_IC:
 			case ' ':
+				if(!aactive[cur]) {
+					if(select_amount == max)
+						break;
+				}
 				aactive[cur] = !aactive[cur];
+				if(aactive[cur])
+					select_amount++;
+				else if(!aactive[cur])
+					select_amount--;
 				/* FALLTHROUGH */
 			case KEY_DOWN:
 			case 'j':
@@ -139,8 +154,12 @@ fs_curs_sel(unsigned cnt, struct fsstat *afiles, int *aactive,
 			case '\r':
 			case '\n':
 				yet = 0;
+				if((max == 1) && (select_amount == 0))
+					aactive[cur] = 1;
 				break;
 			case '.':
+				if(select_amount == max)
+					break;
 				aactive[cur] = !aactive[cur];
 				if (cur < cnt-1) {
 					cur++;
@@ -154,106 +173,6 @@ fs_curs_sel(unsigned cnt, struct fsstat *afiles, int *aactive,
 		}
 	}
 
-	if (curs_closewin(curswin) < 0)
-		return (-1);
-	if (curs_freelist(filestr, cnt) < 0)
-		return (-1);
-	return (0);
-}
-
-int fs_curs_cho(unsigned cnt, struct fsstat *afiles, int *aactive,
-		unsigned viewf) {
-	WINDOW *curswin;
-	char **filestr;
-	int yet, redisp, ch;
-	int my, mx;
-	unsigned start, cur;
-
-	if (curs_buildlist(&filestr, cnt, afiles, viewf) < 0)
-		return (-1);
-	if (curs_initwin(&curswin) < 0)
-		return (-1);
-
-	getmaxyx(curswin, my, mx);
-	cur = start = 0;
-	yet = redisp = 1;
-	while (yet) {
-		if (redisp) {
-			curs_displist(curswin, filestr, cnt, aactive,
-			    start, cur);
-			refresh();
-		}
-
-		switch (ch = getch(), ch) {
-			case KEY_DOWN:
-			case 'j':
-				if (cur < cnt-1) {
-					cur++;
-					redisp = 1;
-					if (cur >=  start + (unsigned) my)
-						start = cur - (unsigned) my + 1;
-				}
-				break;
-
-			case KEY_UP:
-			case 'k':
-				if (cur) {
-					cur--;
-					redisp = 1;
-					if (cur < start)
-						start = cur;
-				}
-				break;
-
-			case KEY_PPAGE:
-			case 'K':
-				/* keep relative page offset */
-				cur -= start;
-				if (start >= (unsigned) my)
-					start -= (unsigned) my;
-				else if (start)
-					start = 0;
-				cur += start;
-				redisp = 1;
-				break;
-
-			case KEY_NPAGE:
-			case 'J':
-				cur -= start;
-				if (start + (unsigned) my < cnt)
-					start += (unsigned) my;
-				if (start + cur >= cnt)
-					cur = cnt-1;
-				else
-					cur += start;
-				redisp = 1;
-				break;
-
-			case KEY_HOME:
-				start = cur = 0;
-				redisp = 1;
-				break;
-
-			case KEY_END:
-				start = (unsigned int) (((cnt-1) / (unsigned int) my) * (unsigned) my);
-				cur = cnt-1;
-				break;
-
-			case '\033':
-				yet = 0;
-				break;
-
-			case KEY_ENTER:
-			case '\r':
-			case '\n':
-				yet = 0;
-				aactive[cur] = !aactive[cur];
-				break;	
-
-
-		}
-
-	}
 	if (curs_closewin(curswin) < 0)
 		return (-1);
 	if (curs_freelist(filestr, cnt) < 0)

@@ -44,17 +44,18 @@
 static char	cvs_id[] __UNUS =
 "$Ringlet: c/misc/fselect/fselect.c,v 1.4 2014/01/07 13:22:22 roam Exp $";
 
-typedef int	(*fs_selfun)(unsigned, struct fsstat *, int *, unsigned);
+typedef int	(*fs_selfun)(unsigned, struct fsstat *, int *, unsigned, int);
 
 static fs_selfun 	fs_select[FS_STYPE_LAST] = {
 	fs_confirm_sel,
-	fs_curs_sel,
-	fs_curs_cho
+	fs_curs_sel
 };
 static fs_seltype	stype = FS_STYPE_CURS;
 
 static int	*fs_active;
 static unsigned	viewf = FS_SVIEW_DEF;
+
+static int max = 0;
 
 int		parseopts(int, char **);
 int		statfiles(int, char **);
@@ -73,7 +74,7 @@ main(int argc, char **argv) {
 		usage(1);
 	
 	switchtotty();
-	fs_select[stype](fs_filecnt, fs_stat, fs_active, viewf);
+	fs_select[stype](fs_filecnt, fs_stat, fs_active, viewf, max);
 	switchtostdout();
 
 	outfiles();
@@ -102,7 +103,7 @@ usage(int ferr) {
 	    "\t-y\tuse 'confirm one by one' selection mode;\n"
 	    "\t-h\tprint this help message and exit;\n"
 	    "\t-V\tprint version information and exit.\n"
-	    "\t-o\tselect only one file\n"
+	    "\t-n\tspecify maximal amount of selections\n"
 	    );
 	if (ferr)
 		exit(EX_USAGE);
@@ -172,8 +173,12 @@ parseopts(int argc, char **argv) {
 			case 'V':
 				versq = 1;
 				break;
-			case 'o':
-				stype = FS_STYPE_CURS_ONE;
+			case 'n':
+				max = atoi(optarg);
+				if(max <= 0) {
+					usage(0);
+					exit(1);
+				}
 				break;
 			default:
 				usage(1);
