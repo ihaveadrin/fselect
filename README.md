@@ -16,7 +16,7 @@ Usage
   -y instead of the menu interface, asks in stdout if you wish to select 
      a file at a time
 
-  -c use curses/ncurses selection mode
+  -c use curses/ncurses selection mode (default)
 
   -n specify maximum amount of selections
 
