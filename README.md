@@ -69,4 +69,4 @@ This program has potential, I seek to integrate it with dircolors and to
 make some kind of hacked up file manager with it and a shell scripts.
 Submit your patches.
 
-(c) 2001-2019 Peter Pentchev, Teodoro Santoni, dyveloper
+(c) 2001-2019 Peter Pentchev, Teodoro Santoni, Dylan Göpel
